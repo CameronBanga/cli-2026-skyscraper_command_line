@@ -1,4 +1,5 @@
 pub mod composer;
+pub mod about;
 pub mod login;
 pub mod post_widget;
 pub mod profile;

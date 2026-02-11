@@ -10,6 +10,8 @@ pub struct AppConfig {
     pub default_handle: Option<String>,
     #[serde(default)]
     pub prefer_app_password: bool,
+    #[serde(default)]
+    pub promo_dismissed: bool,
 }
 
 fn default_service() -> String {
@@ -22,6 +24,7 @@ impl Default for AppConfig {
             service: default_service(),
             default_handle: None,
             prefer_app_password: false,
+            promo_dismissed: false,
         }
     }
 }

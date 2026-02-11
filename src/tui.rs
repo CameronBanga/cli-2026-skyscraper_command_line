@@ -1,5 +1,6 @@
 use anyhow::Result;
 use crossterm::{
+    cursor,
     event::{
         KeyboardEnhancementFlags, PopKeyboardEnhancementFlags, PushKeyboardEnhancementFlags,
     },
@@ -31,6 +32,6 @@ pub fn init() -> Result<Tui> {
 pub fn restore() -> Result<()> {
     let _ = execute!(stdout(), PopKeyboardEnhancementFlags);
     terminal::disable_raw_mode()?;
-    execute!(stdout(), LeaveAlternateScreen)?;
+    execute!(stdout(), LeaveAlternateScreen, cursor::Show)?;
     Ok(())
 }

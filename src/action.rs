@@ -79,6 +79,9 @@ pub enum Action {
         cursor: Option<String>,
     },
 
+    // About
+    ShowAbout,
+
     // Errors
     Error(String),
     ClearError,

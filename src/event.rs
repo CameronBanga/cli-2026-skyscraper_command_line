@@ -68,6 +68,7 @@ pub fn key_to_action(key: KeyEvent, in_composer: bool, in_login: bool) -> Option
         (KeyModifiers::SHIFT, KeyCode::Char('G')) => Some(Action::ScrollToBottom),
         (KeyModifiers::NONE, KeyCode::Char('1')) => Some(Action::SwitchTab(0)),
         (KeyModifiers::NONE, KeyCode::Char('2')) => Some(Action::SwitchTab(1)),
+        (KeyModifiers::NONE, KeyCode::Char('a')) => Some(Action::ShowAbout),
         _ => None,
     }
 }

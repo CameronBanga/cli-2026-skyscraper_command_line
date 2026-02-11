@@ -23,13 +23,16 @@ pub fn draw_statusbar(
         match screen {
             Screen::Login => "Tab: switch fields | Enter: login | Esc: quit",
             Screen::Timeline => {
-                "j/k: navigate | Enter: thread | n: post | r: reply | l: like | t: repost | R: refresh | q: quit"
+                "j/k: navigate | Enter: thread | n: post | r: reply | l: like | t: repost | R: refresh | a: about | q: quit"
             }
             Screen::Thread => {
-                "Esc: back | r: reply | l: like | t: repost | u: profile | q: quit"
+                "Esc: back | r: reply | l: like | t: repost | u: profile | a: about | q: quit"
             }
             Screen::Profile => {
-                "j/k: navigate | Enter: thread | Esc: back | q: quit"
+                "j/k: navigate | Enter: thread | Esc: back | a: about | q: quit"
+            }
+            Screen::About => {
+                "Esc: back | Enter: open App Store | q: quit"
             }
         }
     };

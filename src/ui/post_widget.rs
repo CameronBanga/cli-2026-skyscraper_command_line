@@ -124,27 +124,27 @@ pub fn draw_post(frame: &mut Frame, area: Rect, post: &PostViewModel, selected: 
     // Embed summary
     if let Some(ref embed) = post.embed_summary {
         if y < bottom {
-            let embed_text = match (&embed.title, &embed.description) {
-                (Some(t), _) => format!("📎 {}", t),
-                (_, Some(d)) => format!("📎 {}", d),
-                _ => format!("📎 [{}]", match embed.kind {
-                    crate::models::post::EmbedKind::ExternalLink => "link",
-                    crate::models::post::EmbedKind::Images(n) => {
-                        if y < bottom {
-                            draw_embed_images(frame, x, y, w, n);
-                        }
-                        return;
-                    }
-                    crate::models::post::EmbedKind::Video => "video",
-                    crate::models::post::EmbedKind::Record => "quote",
-                    crate::models::post::EmbedKind::RecordWithMedia => "quote+media",
-                }),
-            };
-            frame.render_widget(
-                Paragraph::new(embed_text).style(Style::default().fg(Color::DarkGray)),
-                Rect::new(x, y, w, 1),
-            );
-            y += 1;
+            if let crate::models::post::EmbedKind::Images(n) = embed.kind {
+                draw_embed_images(frame, x, y, w, n);
+                y += 1;
+            } else {
+                let embed_text = match (&embed.title, &embed.description) {
+                    (Some(t), _) => format!("📎 {}", t),
+                    (_, Some(d)) => format!("📎 {}", d),
+                    _ => format!("📎 [{}]", match embed.kind {
+                        crate::models::post::EmbedKind::ExternalLink => "link",
+                        crate::models::post::EmbedKind::Video => "video",
+                        crate::models::post::EmbedKind::Record => "quote",
+                        crate::models::post::EmbedKind::RecordWithMedia => "quote+media",
+                        crate::models::post::EmbedKind::Images(_) => unreachable!(),
+                    }),
+                };
+                frame.render_widget(
+                    Paragraph::new(embed_text).style(Style::default().fg(Color::DarkGray)),
+                    Rect::new(x, y, w, 1),
+                );
+                y += 1;
+            }
         }
     }
 
