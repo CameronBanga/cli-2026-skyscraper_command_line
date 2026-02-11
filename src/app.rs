@@ -1,5 +1,4 @@
 use std::sync::Arc;
-use std::time::Duration;
 
 use anyhow::Result;
 use crossterm::event::{Event, KeyCode, KeyModifiers};
@@ -106,7 +105,7 @@ impl App {
             }
         }
 
-        let mut events = EventHandler::new(Duration::from_millis(250));
+        let mut events = EventHandler::new();
 
         loop {
             terminal.draw(|frame| self.draw(frame))?;

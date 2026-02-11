@@ -1,35 +1,27 @@
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers};
-use std::time::Duration;
-use tokio::sync::mpsc;
+use crossterm::event::{Event, EventStream, KeyCode, KeyEvent, KeyModifiers};
+use futures::StreamExt;
 
 use crate::action::Action;
 
 pub struct EventHandler {
-    rx: mpsc::UnboundedReceiver<Event>,
-    _task: tokio::task::JoinHandle<()>,
+    stream: EventStream,
 }
 
 impl EventHandler {
-    pub fn new(tick_rate: Duration) -> Self {
-        let (tx, rx) = mpsc::unbounded_channel();
-
-        let task = tokio::spawn(async move {
-            loop {
-                if event::poll(tick_rate).unwrap_or(false) {
-                    if let Ok(evt) = event::read() {
-                        if tx.send(evt).is_err() {
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-
-        EventHandler { rx, _task: task }
+    pub fn new() -> Self {
+        EventHandler {
+            stream: EventStream::new(),
+        }
     }
 
     pub async fn next(&mut self) -> Option<Event> {
-        self.rx.recv().await
+        loop {
+            match self.stream.next().await {
+                Some(Ok(event)) => return Some(event),
+                Some(Err(_)) => continue,
+                None => return None,
+            }
+        }
     }
 }
 
