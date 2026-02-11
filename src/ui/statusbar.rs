@@ -18,7 +18,7 @@ pub fn draw_statusbar(
     }
 
     let hints = if in_composer {
-        "Ctrl+Enter: post | Esc: cancel"
+        "Enter: post | Esc: cancel"
     } else {
         match screen {
             Screen::Login => "Tab: switch fields | Enter: login | Esc: quit",

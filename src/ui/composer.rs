@@ -66,28 +66,32 @@ impl Composer {
 
 impl Component for Composer {
     fn handle_key_event(&mut self, key: KeyEvent) -> Option<Action> {
-        match (key.modifiers, key.code) {
-            (KeyModifiers::NONE, KeyCode::Esc) => return Some(Action::CloseComposer),
-            (KeyModifiers::CONTROL, KeyCode::Enter)
-            | (KeyModifiers::ALT, KeyCode::Enter)
-            | (KeyModifiers::CONTROL, KeyCode::Char('s')) => {
-                let text = self.text();
-                if text.is_empty() {
-                    return None;
-                }
-                return Some(Action::SubmitPost {
-                    text,
-                    reply_to: self.reply_to.clone(),
-                });
-            }
-            _ => {
-                // Check character limit before allowing input
-                if matches!(key.code, KeyCode::Char(_)) && self.char_count() >= MAX_CHARS {
-                    return None;
-                }
-                self.textarea.input(key);
-            }
+        // Esc closes the composer
+        if key.code == KeyCode::Esc {
+            return Some(Action::CloseComposer);
         }
+
+        // Enter (with or without modifiers) submits the post
+        // Ctrl+S also submits
+        if key.code == KeyCode::Enter
+            || (key.modifiers.contains(KeyModifiers::CONTROL)
+                && key.code == KeyCode::Char('s'))
+        {
+            let text = self.text();
+            if text.is_empty() {
+                return None;
+            }
+            return Some(Action::SubmitPost {
+                text,
+                reply_to: self.reply_to.clone(),
+            });
+        }
+
+        // All other keys go to the textarea
+        match key.code {
+            KeyCode::Char(_) if self.char_count() >= MAX_CHARS => return None,
+            _ => self.textarea.input(key),
+        };
         None
     }
 
@@ -129,7 +133,7 @@ impl Component for Composer {
             ),
             Span::raw("  "),
             Span::styled(
-                "Ctrl+Enter/Ctrl+S: post  Esc: cancel",
+                "Enter: post  Esc: cancel",
                 Style::default().fg(Color::DarkGray),
             ),
         ]);
