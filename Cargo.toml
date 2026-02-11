@@ -1,0 +1,56 @@
+[package]
+name = "skyscraper"
+version = "0.1.0"
+edition = "2021"
+description = "A TUI client for Bluesky"
+license = "MIT"
+repository = "https://github.com/cameronbanga/skyscraper-cli"
+
+[[bin]]
+name = "skyscraper"
+path = "src/main.rs"
+
+[dependencies]
+# TUI
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream"] }
+tui-textarea = { version = "0.7", features = ["crossterm"] }
+
+# Async
+tokio = { version = "1", features = ["full"] }
+tokio-stream = "0.1"
+futures = "0.3"
+
+# Bluesky / AT Protocol
+bsky-sdk = "0.1"
+atrium-api = { version = "0.25", features = ["namespace-appbsky"] }
+
+# HTTP / Crypto
+reqwest = { version = "0.12", features = ["json"] }
+p256 = { version = "0.13", features = ["jwk", "ecdsa"] }
+sha2 = "0.10"
+base64 = "0.22"
+rand = "0.8"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Utilities
+chrono = { version = "0.4", features = ["serde"] }
+unicode-width = "0.2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4"] }
+open = "5"
+url = "2"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
