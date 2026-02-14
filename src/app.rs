@@ -133,7 +133,7 @@ impl App {
                 // Promo popover intercepts all keys
                 if self.show_promo {
                     if key.code == KeyCode::Enter {
-                        let _ = open::that("https://apps.apple.com/app/skyscraper-for-bluesky/id6738512700");
+                        let _ = open::that("https://apps.apple.com/app/apple-store/id6754198379?pt=118981141&ct=mac_tui_application&mt=8");
                     }
                     self.dismiss_promo();
                     return;
@@ -156,7 +156,7 @@ impl App {
 
                 // About screen: Enter opens App Store URL
                 if self.screen == Screen::About && key.code == KeyCode::Enter {
-                    let _ = open::that("https://apps.apple.com/app/skyscraper-for-bluesky/id6738512700");
+                    let _ = open::that("https://apps.apple.com/app/apple-store/id6754198379?pt=118981141&ct=mac_tui_application&mt=8");
                     return;
                 }
 
