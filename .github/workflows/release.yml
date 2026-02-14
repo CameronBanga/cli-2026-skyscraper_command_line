@@ -45,3 +45,62 @@ jobs:
         with:
           files: skyscraper-*-universal-apple-darwin.tar.gz
           generate_release_notes: true
+
+  update-homebrew:
+    name: Update Homebrew tap
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for release assets
+        run: sleep 30
+
+      - name: Download release tarball
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          curl -L -o skyscraper.tar.gz \
+            "https://github.com/CameronBanga/cli-2026-skyscraper_command_line/releases/download/${GITHUB_REF_NAME}/skyscraper-${VERSION}-universal-apple-darwin.tar.gz"
+
+      - name: Compute SHA256
+        id: sha
+        run: |
+          SHA=$(sha256sum skyscraper.tar.gz | awk '{print $1}')
+          echo "sha256=${SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Update Homebrew formula
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          SHA="${{ steps.sha.outputs.sha256 }}"
+          URL="https://github.com/CameronBanga/cli-2026-skyscraper_command_line/releases/download/${GITHUB_REF_NAME}/skyscraper-${VERSION}-universal-apple-darwin.tar.gz"
+
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/CameronBanga/homebrew-skyscraper.git" tap
+          cd tap
+
+          cat > Formula/skyscraper.rb << FORMULA
+          class Skyscraper < Formula
+            desc "A TUI client for Bluesky"
+            homepage "https://github.com/CameronBanga/cli-2026-skyscraper_command_line"
+            url "${URL}"
+            sha256 "${SHA}"
+            version "${VERSION}"
+            license "MIT"
+
+            def install
+              bin.install "skyscraper"
+            end
+
+            test do
+              assert_match "skyscraper", shell_output("\#{bin}/skyscraper --version", 2)
+            end
+          end
+          FORMULA
+
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' Formula/skyscraper.rb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/skyscraper.rb
+          git commit -m "Update skyscraper to ${VERSION}"
+          git push

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "A TUI client for Bluesky"
 license = "MIT"
-repository = "https://github.com/cameronbanga/skyscraper-cli"
+repository = "https://github.com/CameronBanga/cli-2026-skyscraper_command_line"
 
 [[bin]]
 name = "skyscraper"
